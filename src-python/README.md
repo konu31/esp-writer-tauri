@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ## ファームウェアファイル格納
 下記ディレクトリにファイルを格納
-src-python/resources/firmware
+- src-python/resources/firmware
 
 
 
