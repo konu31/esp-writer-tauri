@@ -13,6 +13,13 @@ npm install
 
 
 ### sidecarの実行ファイルを格納
+
+#### フォルダ作成
+```
+mkdir src-tauri/sidecar-app
+```
+
+#### Pythonの実行ファイル作成
 [参照](src-python/README.md)
 
 
