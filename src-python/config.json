@@ -1,0 +1,22 @@
+{
+    "file": {
+        "bootloader": "bootloader.bin",
+        "partitions": "partitions.bin",
+        "boot_app0": "boot_app0.bin",
+        "firmware": "firmware.bin"
+    },
+    "address": {
+        "esp32": {
+            "bootloader": "0x1000",
+            "partitions": "0x8000",
+            "boot_app0": "0xe000",
+            "firmware": "0x10000"
+        },
+        "esp32s3": {
+            "bootloader": "0x0",
+            "partitions": "0x8000",
+            "boot_app0": "0xe000",
+            "firmware": "0x10000"
+        }
+    }
+}
