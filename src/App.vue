@@ -30,13 +30,16 @@ let writeable = ref(false)
 let result = ref("")
 
 
+/**
+ * ポート取得中に更新ボタンをクリックできないようにする
+ */
 watch(portList, (newValue, _oldValue) => {
   gettingPort.value = newValue.length <= 1
 });
 
 
 /**
- * 自動スクロール
+ * コンソール(textarea)の最終行が表示されるようにスクロール
  */
 function scrollResult() {
   let textarea = document.getElementById("result")
@@ -45,29 +48,46 @@ function scrollResult() {
   }
 }
 
+/**
+ * get_port_listの結果からPortのプルダウンを作成
+ */
 listen("port_list", (event) => {
-  const portListJson = JSON.parse(String(event.payload))
-  portList.value = [{ text: "Select", value: "", disabled: true }]
-  portListJson.forEach((device: string) => {
-    portList.value.push({ text: device, value: device, disabled: false })
-  })
+  const message: string = String(event.payload)
+  if (message.startsWith("error:")) {
+    result.value += message
+    scrollResult()
+  } else {
+    const portListJson = JSON.parse(message)
+    portList.value = [{ text: "Select", value: "", disabled: true }]
+    portListJson.forEach((device: string) => {
+      portList.value.push({ text: device, value: device, disabled: false })
+    })
+  }
 })
 
+/**
+ * get_board_infoの結果をコンソール(textarea)に出力 & Chipを選択
+ */
 listen("board_info", (event) => {
-  result.value += String(event.payload)
+  const message: string = String(event.payload)
+  result.value += message
   scrollResult()
+
+  const detectChipMessage: string = "Detecting chip type... "
+  if (message.startsWith(detectChipMessage)) {
+    const chip = message.replace(detectChipMessage, "").slice(0, -1)
+    chipList.value.forEach(item => {
+      if (item.text === chip) {
+        selectedChip.value = item.value
+        writeable.value = true
+      }
+    })
+  }
 })
 
-listen("select_chip", (event) => {
-  let chipText = String(event.payload)
-  chipList.value.forEach(item => {
-    if (item.text === chipText) {
-      selectedChip.value = item.value
-      writeable.value = true
-    }
-  })
-})
-
+/**
+ * write_firmwareの結果を受け取りコンソール(textarea)に出力
+ */
 listen("write_firmware", (event) => {
   result.value += String(event.payload)
   scrollResult()
